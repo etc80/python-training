@@ -9,6 +9,8 @@ ID, FORENAME, MIDDLENAME, SURNAME, DEPARTMENT = range(5)
 User = collections.namedtuple("User",
             "username forename middlename surname id")
 
+NAMEWIDTH = 17
+USERNAMEWIDTH = 9
 
 def main():
     if len(sys.argv) == 1 or sys.argv[1] in {"-h", "--help"}:
@@ -49,14 +51,19 @@ def generate_username(fields, usernames):
     return username
 
 
-def print_users(users):
-    namewidth = 32
-    usernamewidth = 9
+def print_headers():
+    print("{0:<{nw}} {1:^6} {2:{uw}} {0:<{nw}} {1:^6} {2:{uw}}".format(
+        "Name", "ID", "Username", nw=NAMEWIDTH, uw=USERNAMEWIDTH))
+    print("{0:-<{nw}} {0:-<6} {0:-<{uw}} {0:-<{nw}} {0:-<6} {0:-<{uw}}".format(
+        "", nw=NAMEWIDTH, uw=USERNAMEWIDTH))
 
-    print("{0:<{nw}} {1:^6} {2:{uw}}".format(
-          "Name", "ID", "Username", nw=namewidth, uw=usernamewidth))
-    print("{0:-<{nw}} {0:-<6} {0:-<{uw}}".format(
-          "", nw=namewidth, uw=usernamewidth))
+
+def print_users(users):
+
+    print_headers()
+
+    lineend = ''
+    counter = 1
 
     for key in sorted(users):
         user = users[key]
@@ -64,8 +71,18 @@ def print_users(users):
         if user.middlename:
             initial = " " + user.middlename[0]
         name = "{0.surname}, {0.forename}{1}".format(user, initial)
+        if len(name) >= 17:
+            name = name[:17]
+        if counter % 2 == 0:
+            lineend = '\n'
+        else:
+            lineend = ' '
         print("{0:.<{nw}} ({1.id:4}) {1.username:{uw}}".format(
-              name, user, nw=namewidth, uw=usernamewidth))
+              name, user, nw=NAMEWIDTH, uw=USERNAMEWIDTH), end=lineend)
+        if counter % 128 == 0:
+            print('\f')
+
+        counter += 1
 
 
 main()
