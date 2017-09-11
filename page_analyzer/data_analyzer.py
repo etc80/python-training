@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 import csv
 import re
 import sys
@@ -13,6 +14,7 @@ def main():
 	cleaned_data_file = 'cleared ' + basic_file_name
 	import_file = 'import ' + basic_file_name
 	searches_file = 'searches ' + basic_file_name
+	file_with_urls = 'analyzed_results.csv'
 	extract_searches(analytic_file, searches_file)
 	with open(analytic_file, 'r') as anal_file:
 		csv_reader = csv.DictReader(anal_file)
@@ -29,7 +31,7 @@ def main():
 	print('File was cleaned and ',len(page_urls), 'unique records left')
 	header = ['id', 'Page URL', 'Pageviews']
 	init_file(import_file, header)
-	with open('analyzed_results.csv', 'r') as csvfile:
+	with open(file_with_urls, 'r') as csvfile:
 		reader = csv.DictReader(csvfile)
 		for row in reader:
 			current_url = row['Page_URL__c'].lower()
